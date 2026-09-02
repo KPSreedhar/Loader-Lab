@@ -1,0 +1,891 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="bakelite">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LoaderLab — a working catalog of CSS loaders</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ============ THEME TOKENS ============ */
+:root{
+  --bg:#ECE3D0;
+  --panel:#FFFCF5;
+  --panel-border:#1F2620;
+  --ink:#1F2620;
+  --muted:#6B6255;
+  --accent:#1B4B43;
+  --accent-2:#C98A2C;
+  --accent-3:#C1432E;
+  --well:rgba(31,38,32,0.06);
+  --loader-color:var(--accent);
+  --speed:1;
+  --radius:6px;
+  --font-display:'Fraunces', serif;
+  --font-mono:'IBM Plex Mono', monospace;
+}
+html[data-theme="night"]{
+  --bg:#14171B; --panel:#1B1F24; --panel-border:#3A4048; --ink:#EDEFF2; --muted:#9098A1;
+  --accent:#7CE7C4; --accent-2:#F2B84B; --accent-3:#FF6B6B; --well:rgba(255,255,255,0.05);
+}
+html[data-theme="blueprint"]{
+  --bg:#0F2A4A; --panel:#123457; --panel-border:#3E6690; --ink:#EAF2FB; --muted:#9FB8D1;
+  --accent:#6FB7FF; --accent-2:#FFD166; --accent-3:#FF8FA3; --well:rgba(255,255,255,0.06);
+}
+html[data-theme="mint"]{
+  --bg:#E9F2EB; --panel:#FFFFFF; --panel-border:#1F2620; --ink:#1F2620; --muted:#5B6B60;
+  --accent:#2F7A5C; --accent-2:#D96E3E; --accent-3:#B23A48; --well:rgba(31,38,32,0.05);
+}
+
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--ink);
+  font-family:var(--font-mono);
+  font-size:15px;
+  line-height:1.6;
+  transition:background .3s ease, color .3s ease;
+}
+h1,h2,h3{font-family:var(--font-display);font-weight:600;margin:0;}
+p{margin:0;}
+a{color:inherit;}
+button{font-family:var(--font-mono);}
+::selection{background:var(--loader-color);color:var(--panel);}
+
+:focus-visible{outline:2px solid var(--loader-color);outline-offset:3px;}
+
+.wrap{max-width:1180px;margin:0 auto;padding:0 24px;}
+
+/* ============ HEADER ============ */
+header.plate{
+  padding:56px 0 40px;
+  border-bottom:2px solid var(--panel-border);
+}
+.plate-top{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  gap:40px;
+  flex-wrap:wrap;
+}
+.wordmark{
+  font-family:var(--font-mono);
+  font-size:.78rem;
+  letter-spacing:.08em;
+  color:var(--muted);
+  margin-bottom:14px;
+}
+h1.title{
+  font-size:clamp(2.4rem, 5vw, 3.6rem);
+  line-height:1.02;
+  max-width:11ch;
+}
+.tagline{
+  margin-top:16px;
+  max-width:46ch;
+  color:var(--muted);
+  font-size:.95rem;
+}
+.hero-bay{
+  position:relative;
+  width:190px;
+  height:190px;
+  flex-shrink:0;
+  border:2px solid var(--panel-border);
+  border-radius:var(--radius);
+  background:var(--panel);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.hero-bay::before,.hero-bay::after{
+  content:'';
+  position:absolute;
+  width:14px;height:14px;
+  border-color:var(--accent-2);
+  border-style:solid;
+}
+.hero-bay::before{top:-2px;left:-2px;border-width:2px 0 0 2px;}
+.hero-bay::after{bottom:-2px;right:-2px;border-width:0 2px 2px 0;}
+.hero-bay .tag{
+  position:absolute;
+  bottom:-13px;
+  left:16px;
+  background:var(--bg);
+  padding:0 8px;
+  font-size:.68rem;
+  color:var(--muted);
+  letter-spacing:.05em;
+}
+
+/* ============ CONTROL DECK ============ */
+.deck{
+  padding:28px 0;
+  border-bottom:2px solid var(--panel-border);
+  display:flex;
+  flex-wrap:wrap;
+  gap:22px 34px;
+  align-items:flex-end;
+}
+.deck-group{display:flex;flex-direction:column;gap:8px;}
+.deck-label{font-size:.68rem;letter-spacing:.06em;color:var(--muted);}
+.swatch-row{display:flex;gap:8px;}
+.swatch{
+  width:30px;height:30px;
+  border-radius:50%;
+  border:2px solid var(--panel-border);
+  cursor:pointer;
+  padding:0;
+  position:relative;
+}
+.swatch[data-active="true"]::after{
+  content:'';
+  position:absolute;inset:-6px;
+  border:2px solid var(--loader-color);
+  border-radius:50%;
+}
+.swatch-bakelite{background:linear-gradient(135deg,#ECE3D0 50%, #1B4B43 50%);}
+.swatch-night{background:linear-gradient(135deg,#14171B 50%, #7CE7C4 50%);}
+.swatch-blueprint{background:linear-gradient(135deg,#0F2A4A 50%, #6FB7FF 50%);}
+.swatch-mint{background:linear-gradient(135deg,#E9F2EB 50%, #2F7A5C 50%);}
+
+.color-field{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+input[type="color"]{
+  width:34px;height:34px;
+  border:2px solid var(--panel-border);
+  border-radius:50%;
+  padding:0;
+  background:none;
+  cursor:pointer;
+  overflow:hidden;
+}
+input[type="color"]::-webkit-color-swatch-wrapper{padding:0;}
+input[type="color"]::-webkit-color-swatch{border:none;border-radius:50%;}
+.mini-btn{
+  border:1px solid var(--panel-border);
+  background:var(--panel);
+  color:var(--ink);
+  border-radius:20px;
+  padding:5px 12px;
+  font-size:.72rem;
+  cursor:pointer;
+}
+.mini-btn:hover{background:var(--loader-color);color:var(--panel);border-color:var(--loader-color);}
+
+.speed-field{display:flex;align-items:center;gap:10px;}
+input[type="range"]{accent-color:var(--loader-color);width:120px;}
+.speed-val{font-size:.75rem;color:var(--muted);width:32px;}
+
+.search-field input{
+  background:var(--panel);
+  border:1px solid var(--panel-border);
+  border-radius:20px;
+  padding:8px 14px;
+  color:var(--ink);
+  font-size:.82rem;
+  width:200px;
+}
+.search-field input::placeholder{color:var(--muted);}
+
+.chip-row{display:flex;flex-wrap:wrap;gap:6px;max-width:420px;}
+.chip{
+  border:1px solid var(--panel-border);
+  background:none;
+  color:var(--ink);
+  padding:5px 12px;
+  border-radius:20px;
+  font-size:.72rem;
+  cursor:pointer;
+}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink);}
+
+/* ============ GRID ============ */
+.gallery{padding:44px 0 20px;}
+.gallery-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:26px;flex-wrap:wrap;gap:10px;}
+.gallery-count{color:var(--muted);font-size:.8rem;}
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill, minmax(250px,1fr));
+  gap:20px;
+}
+.card{
+  border:2px solid var(--panel-border);
+  border-radius:var(--radius);
+  background:var(--panel);
+  display:flex;
+  flex-direction:column;
+  overflow:hidden;
+}
+.card-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:12px 14px 0;
+}
+.card-name{font-family:var(--font-display);font-weight:600;font-size:1.05rem;}
+.card-cat{font-size:.66rem;color:var(--muted);letter-spacing:.05em;text-transform:uppercase;margin-top:2px;}
+.fav-btn{
+  background:none;border:none;cursor:pointer;
+  font-size:1.05rem;color:var(--muted);
+  line-height:1;
+}
+.fav-btn[aria-pressed="true"]{color:var(--accent-3);}
+.window{
+  margin:14px 14px 10px;
+  height:130px;
+  border-radius:4px;
+  background:var(--well);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  overflow:hidden;
+}
+.card-desc{padding:0 14px;font-size:.78rem;color:var(--muted);min-height:2.6em;}
+.card-foot{
+  margin-top:auto;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
+  padding:12px 14px 14px;
+  border-top:1px solid var(--well);
+  margin-top:12px;
+}
+.card-color{
+  width:22px;height:22px;
+  border:1px solid var(--panel-border);
+  border-radius:50%;
+  padding:0;
+  cursor:pointer;
+  background:none;
+  overflow:hidden;
+}
+.card-color::-webkit-color-swatch-wrapper{padding:0;}
+.card-color::-webkit-color-swatch{border:none;border-radius:50%;}
+.card-actions{display:flex;gap:8px;}
+.icon-btn{
+  border:1px solid var(--panel-border);
+  background:none;
+  color:var(--ink);
+  border-radius:16px;
+  padding:5px 10px;
+  font-size:.7rem;
+  cursor:pointer;
+}
+.icon-btn:hover{background:var(--ink);color:var(--bg);}
+.no-results{padding:40px 0;color:var(--muted);text-align:center;}
+
+/* ============ MODAL ============ */
+.modal-backdrop{
+  position:fixed;inset:0;
+  background:rgba(10,10,10,.55);
+  display:none;
+  align-items:center;justify-content:center;
+  padding:20px;
+  z-index:100;
+}
+.modal-backdrop.open{display:flex;}
+.modal{
+  background:var(--panel);
+  border:2px solid var(--panel-border);
+  border-radius:var(--radius);
+  width:100%;max-width:640px;
+  max-height:85vh;
+  display:flex;flex-direction:column;
+  overflow:hidden;
+}
+.modal-head{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:16px 20px;
+  border-bottom:2px solid var(--panel-border);
+}
+.modal-head h3{font-size:1.15rem;}
+.modal-close{background:none;border:none;font-size:1.4rem;cursor:pointer;color:var(--ink);}
+.modal-body{padding:20px;overflow:auto;}
+.modal-body pre{
+  background:var(--well);
+  border-radius:4px;
+  padding:16px;
+  font-size:.78rem;
+  overflow:auto;
+  white-space:pre-wrap;
+  word-break:break-word;
+}
+.modal-actions{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap;}
+.btn{
+  border:1px solid var(--panel-border);
+  background:var(--ink);
+  color:var(--bg);
+  border-radius:20px;
+  padding:8px 16px;
+  font-size:.78rem;
+  cursor:pointer;
+}
+.btn.ghost{background:none;color:var(--ink);}
+.btn:hover{opacity:.85;}
+
+/* ============ FOOTER ============ */
+footer{border-top:2px solid var(--panel-border);padding:36px 0 50px;margin-top:50px;}
+footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:14px;color:var(--muted);font-size:.78rem;}
+
+/* ============ LOADER ANIMATIONS (populated by JS) ============ */
+@media (prefers-reduced-motion: reduce){
+  #loaderStyles [class^="l-"] *, #loaderStyles [class^="l-"]{
+    animation-duration:2.2s !important;
+    animation-iteration-count:1 !important;
+  }
+}
+
+@media (max-width:640px){
+  .plate-top{flex-direction:column;}
+  .hero-bay{width:100%;height:150px;}
+  .deck{flex-direction:column;align-items:flex-start;}
+}
+</style>
+</head>
+<body>
+
+<header class="plate">
+  <div class="wrap plate-top">
+    <div>
+      <div class="wordmark">LOADERLAB — INSTRUMENT CATALOG</div>
+      <h1 class="title">Loading states, built with plain CSS.</h1>
+      <p class="tagline">A working catalog of pure-CSS loading animations. Pick a theme, tune the colour per loader or across the board, and copy the code straight into your project.</p>
+    </div>
+    <div class="hero-bay">
+      <div id="heroPreview" class="window" style="margin:0;width:130px;height:130px;background:none;"></div>
+      <span class="tag" id="heroTag">orbit moons</span>
+    </div>
+  </div>
+</header>
+
+<div class="wrap deck">
+  <div class="deck-group">
+    <span class="deck-label">THEME</span>
+    <div class="swatch-row" id="themeRow">
+      <button class="swatch swatch-bakelite" data-theme="bakelite" title="Bakelite" aria-pressed="true"></button>
+      <button class="swatch swatch-night" data-theme="night" title="Night Shift" aria-pressed="false"></button>
+      <button class="swatch swatch-blueprint" data-theme="blueprint" title="Blueprint" aria-pressed="false"></button>
+      <button class="swatch swatch-mint" data-theme="mint" title="Mint Lab" aria-pressed="false"></button>
+    </div>
+  </div>
+
+  <div class="deck-group">
+    <span class="deck-label">GLOBAL LOADER COLOUR</span>
+    <div class="color-field">
+      <input type="color" id="globalColor" value="#1B4B43">
+      <button class="mini-btn" id="resetColorsBtn">Reset all</button>
+      <button class="mini-btn" id="randomColorsBtn">Randomise</button>
+    </div>
+  </div>
+
+  <div class="deck-group">
+    <span class="deck-label">SPEED</span>
+    <div class="speed-field">
+      <input type="range" id="speedSlider" min="0.25" max="2" step="0.25" value="1">
+      <span class="speed-val" id="speedVal">1×</span>
+    </div>
+  </div>
+
+  <div class="deck-group" style="margin-left:auto;">
+    <span class="deck-label">FIND</span>
+    <div class="search-field">
+      <input type="search" id="searchInput" placeholder="Search loaders…">
+    </div>
+  </div>
+</div>
+
+<div class="wrap deck" style="border-top:none;padding-top:0;">
+  <div class="deck-group" style="width:100%;">
+    <span class="deck-label">CATEGORY</span>
+    <div class="chip-row" id="chipRow"></div>
+  </div>
+</div>
+
+<main class="gallery wrap">
+  <div class="gallery-head">
+    <h2 style="font-size:1.3rem;">Specimens</h2>
+    <span class="gallery-count" id="galleryCount"></span>
+  </div>
+  <div class="grid" id="grid"></div>
+  <p class="no-results" id="noResults" style="display:none;">Nothing matches that search. Try a different word or category.</p>
+</main>
+
+<div class="modal-backdrop" id="modalBackdrop">
+  <div class="modal">
+    <div class="modal-head">
+      <h3 id="modalTitle">Loader</h3>
+      <button class="modal-close" id="modalCloseBtn" aria-label="Close">&times;</button>
+    </div>
+    <div class="modal-body">
+      <pre id="modalCode"></pre>
+      <div class="modal-actions">
+        <button class="btn" id="copyBtn">Copy code</button>
+        <button class="btn ghost" id="downloadBtn">Download .html</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="wrap">
+    <span>LoaderLab — no dependencies, no build step, just CSS.</span>
+    <span id="loaderTotal"></span>
+  </div>
+</footer>
+
+<style id="loaderStyles"></style>
+
+<script>
+/* ============ LOADER DEFINITIONS ============ */
+function ring(n, radius, sizeStart, opacityStart, cls){
+  let out = '';
+  for(let i=0;i<n;i++){
+    const angle = (360/n)*i;
+    out += `<span style="transform:rotate(${angle}deg)"></span>`;
+  }
+  return out;
+}
+function repeatDelay(n, cls, delayStep, extra){
+  let out = '';
+  for(let i=0;i<n;i++){
+    out += `<span class="${cls}" style="animation-delay:${(-delayStep*i).toFixed(2)}s${extra?';'+extra(i):''}"></span>`;
+  }
+  return out;
+}
+
+const LOADERS = [
+  {
+    id:'orbit', name:'Orbit Moons', category:'orbit',
+    description:'Three moons revolving a fixed core at independent speeds.',
+    html:`<div class="l-orbit"><div class="l-orbit__core"></div><div class="l-orbit__pivot p1"><span class="l-orbit__moon"></span></div><div class="l-orbit__pivot p2"><span class="l-orbit__moon"></span></div><div class="l-orbit__pivot p3"><span class="l-orbit__moon"></span></div></div>`,
+    css:`.l-orbit{position:relative;width:72px;height:72px;}
+.l-orbit__core{position:absolute;top:50%;left:50%;width:14px;height:14px;margin:-7px;border-radius:50%;background:var(--loader-color);}
+.l-orbit__pivot{position:absolute;top:50%;left:50%;width:0;height:0;animation:orbit-spin calc(2.2s / var(--speed,1)) linear infinite;}
+.l-orbit__pivot.p2{animation-duration:calc(3.4s / var(--speed,1));animation-direction:reverse;}
+.l-orbit__pivot.p3{animation-duration:calc(1.6s / var(--speed,1));}
+.l-orbit__moon{position:absolute;top:-30px;left:-3px;width:6px;height:6px;border-radius:50%;background:var(--loader-color);}
+.l-orbit__pivot.p2 .l-orbit__moon{top:-22px;opacity:.65;}
+.l-orbit__pivot.p3 .l-orbit__moon{top:-14px;width:4px;height:4px;opacity:.4;}
+@keyframes orbit-spin{to{transform:rotate(360deg);}}`
+  },
+  {
+    id:'blob', name:'Morph Blob', category:'morph',
+    description:'A single shape that never repeats its silhouette.',
+    html:`<div class="l-blob"></div>`,
+    css:`.l-blob{width:60px;height:60px;background:var(--loader-color);animation:blob-morph calc(3s / var(--speed,1)) ease-in-out infinite;}
+@keyframes blob-morph{
+0%,100%{border-radius:42% 58% 63% 37% / 41% 42% 58% 59%;}
+25%{border-radius:58% 42% 35% 65% / 63% 38% 62% 37%;}
+50%{border-radius:50% 50% 33% 67% / 55% 27% 73% 45%;}
+75%{border-radius:33% 67% 58% 42% / 63% 68% 32% 37%;}
+}`
+  },
+  {
+    id:'gring', name:'Gradient Ring', category:'ring',
+    description:'A conic-gradient sweep masked into a thin ring.',
+    html:`<div class="l-gring"></div>`,
+    css:`.l-gring{width:64px;height:64px;border-radius:50%;background:conic-gradient(from 0deg, transparent 0deg, var(--loader-color) 340deg, transparent 360deg);animation:gring-spin calc(1.1s / var(--speed,1)) linear infinite;-webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 8px),#000 calc(100% - 8px));mask:radial-gradient(farthest-side,transparent calc(100% - 8px),#000 calc(100% - 8px));}
+@keyframes gring-spin{to{transform:rotate(360deg);}}`
+  },
+  {
+    id:'shimmer', name:'Skeleton Shimmer', category:'bar',
+    description:'Placeholder lines with a light sweep, for text that has not arrived yet.',
+    html:`<div class="l-shimmer"><div class="line l1"></div><div class="line l2"></div><div class="line l3"></div></div>`,
+    css:`.l-shimmer{width:170px;display:flex;flex-direction:column;gap:10px;}
+.l-shimmer .line{height:12px;border-radius:6px;background:var(--loader-color);opacity:.18;position:relative;overflow:hidden;}
+.l-shimmer .line::after{content:'';position:absolute;inset:0;transform:translateX(-100%);background:linear-gradient(90deg,transparent,rgba(255,255,255,.85),transparent);animation:shimmer-sweep calc(1.6s / var(--speed,1)) ease-in-out infinite;}
+.l-shimmer .l2{width:75%;}
+.l-shimmer .l3{width:55%;}
+.l-shimmer .l2::after{animation-delay:.15s;}
+.l-shimmer .l3::after{animation-delay:.3s;}
+@keyframes shimmer-sweep{to{transform:translateX(100%);}}`
+  },
+  {
+    id:'eq', name:'Equaliser Bars', category:'bar',
+    description:'Five bars bouncing out of phase, like a level meter.',
+    html:`<div class="l-eq"><span></span><span></span><span></span><span></span><span></span></div>`,
+    css:`.l-eq{display:flex;align-items:flex-end;gap:6px;height:56px;}
+.l-eq span{width:8px;background:var(--loader-color);border-radius:3px;animation:eq-bounce calc(1s / var(--speed,1)) ease-in-out infinite;}
+.l-eq span:nth-child(1){animation-delay:-.9s;}
+.l-eq span:nth-child(2){animation-delay:-.7s;}
+.l-eq span:nth-child(3){animation-delay:-.5s;}
+.l-eq span:nth-child(4){animation-delay:-.3s;}
+.l-eq span:nth-child(5){animation-delay:-.1s;}
+@keyframes eq-bounce{0%,100%{height:14px;}50%{height:56px;}}`
+  },
+  {
+    id:'tri', name:'Triangle Spin', category:'shape',
+    description:'A solid triangle turning on its own centre.',
+    html:`<div class="l-tri"></div>`,
+    css:`.l-tri{width:0;height:0;border-left:30px solid transparent;border-right:30px solid transparent;border-bottom:52px solid var(--loader-color);animation:tri-spin calc(1.8s / var(--speed,1)) linear infinite;}
+@keyframes tri-spin{to{transform:rotate(360deg);}}`
+  },
+  {
+    id:'hourglass', name:'Hourglass Flip', category:'shape',
+    description:'Two triangles that trade places on a timer.',
+    html:`<div class="l-hour"><span class="top"></span><span class="bottom"></span></div>`,
+    css:`.l-hour{width:44px;height:60px;position:relative;animation:hour-flip calc(2.4s / var(--speed,1)) ease-in-out infinite;}
+.l-hour .top,.l-hour .bottom{position:absolute;left:0;width:0;height:0;border-left:22px solid transparent;border-right:22px solid transparent;}
+.l-hour .top{top:0;border-top:26px solid var(--loader-color);}
+.l-hour .bottom{bottom:0;border-bottom:26px solid var(--loader-color);opacity:.5;}
+@keyframes hour-flip{0%,40%{transform:rotate(0deg);}50%,90%{transform:rotate(180deg);}100%{transform:rotate(180deg);}}`
+  },
+  {
+    id:'radar', name:'Radar Sweep', category:'ring',
+    description:'A ring with a rotating wedge, like a radar screen.',
+    html:`<div class="l-radar"><span class="sweep"></span></div>`,
+    css:`.l-radar{width:64px;height:64px;border-radius:50%;border:2px solid var(--loader-color);position:relative;overflow:hidden;}
+.l-radar .sweep{position:absolute;inset:0;background:conic-gradient(from 0deg, var(--loader-color), transparent 35%);border-radius:50%;animation:radar-spin calc(1.8s / var(--speed,1)) linear infinite;opacity:.7;}
+@keyframes radar-spin{to{transform:rotate(360deg);}}`
+  },
+  {
+    id:'comet', name:'Comet Trail', category:'path',
+    description:'A dot circling with a fading trail behind it.',
+    html:(() => {
+      let dots = '';
+      const n = 6;
+      for(let i=0;i<n;i++){
+        const angle = -i*14;
+        const opacity = (1 - i*0.16).toFixed(2);
+        const size = Math.max(3, 8 - i);
+        dots += `<span style="transform:rotate(${angle}deg);opacity:${opacity};width:${size}px;height:${size}px;margin-left:${-size/2}px;"></span>`;
+      }
+      return `<div class="l-comet">${dots}</div>`;
+    })(),
+    css:`.l-comet{position:relative;width:70px;height:70px;animation:comet-spin calc(1.6s / var(--speed,1)) linear infinite;}
+.l-comet span{position:absolute;top:0;left:50%;border-radius:50%;background:var(--loader-color);transform-origin:50% 35px;}
+@keyframes comet-spin{to{transform:rotate(360deg);}}`
+  },
+  {
+    id:'dna', name:'DNA Helix', category:'path',
+    description:'Two dot strands swaying in opposite directions.',
+    html:(() => {
+      let a='', b='';
+      for(let i=0;i<6;i++){
+        a += `<span class="dot" style="animation-delay:${(-0.12*i).toFixed(2)}s"></span>`;
+        b += `<span class="dot" style="animation-delay:${(-0.12*i).toFixed(2)}s"></span>`;
+      }
+      return `<div class="l-dna"><div class="strand a">${a}</div><div class="strand b">${b}</div></div>`;
+    })(),
+    css:`.l-dna{display:flex;gap:6px;height:64px;align-items:center;}
+.l-dna .strand{display:flex;flex-direction:column;gap:6px;}
+.l-dna .dot{width:8px;height:8px;border-radius:50%;background:var(--loader-color);animation:dna-sway calc(1.4s / var(--speed,1)) ease-in-out infinite;}
+.l-dna .strand.b .dot{animation-direction:reverse;opacity:.55;}
+@keyframes dna-sway{0%,100%{transform:translateX(-9px);}50%{transform:translateX(9px);}}`
+  },
+  {
+    id:'flip', name:'Flip Card', category:'shape',
+    description:'A square that tumbles end over end.',
+    html:`<div class="l-flip"></div>`,
+    css:`.l-flip{width:48px;height:48px;background:var(--loader-color);animation:flip-spin calc(1.4s / var(--speed,1)) ease-in-out infinite;}
+@keyframes flip-spin{0%{transform:perspective(200px) rotateY(0deg) rotateX(0deg);}50%{transform:perspective(200px) rotateY(180deg) rotateX(0deg);}100%{transform:perspective(200px) rotateY(180deg) rotateX(180deg);}}`
+  },
+  {
+    id:'pinwheel', name:'Pinwheel', category:'shape',
+    description:'Four blades of falling opacity, spinning as one.',
+    html:(() => {
+      let blades = '';
+      const opac = [0.95,0.7,0.5,0.32];
+      for(let i=0;i<4;i++){
+        blades += `<span style="transform:rotate(${i*90}deg);opacity:${opac[i]}"></span>`;
+      }
+      return `<div class="l-pinwheel">${blades}</div>`;
+    })(),
+    css:`.l-pinwheel{position:relative;width:60px;height:60px;animation:pinwheel-spin calc(1.6s / var(--speed,1)) linear infinite;}
+.l-pinwheel span{position:absolute;top:50%;left:50%;width:26px;height:12px;background:var(--loader-color);border-radius:0 50% 50% 50%;transform-origin:0 50%;}
+@keyframes pinwheel-spin{to{transform:rotate(360deg);}}`
+  },
+  {
+    id:'liquid', name:'Liquid Fill', category:'morph',
+    description:'A circle with a slow-turning pool inside it.',
+    html:`<div class="l-liquid"><div class="fill"></div></div>`,
+    css:`.l-liquid{width:56px;height:56px;border-radius:50%;border:2px solid var(--loader-color);overflow:hidden;position:relative;}
+.l-liquid .fill{position:absolute;left:-25%;bottom:0;width:150%;height:150%;background:var(--loader-color);opacity:.7;border-radius:40%;animation:liquid-rise calc(3.2s / var(--speed,1)) linear infinite;}
+@keyframes liquid-rise{from{transform:translate(0,60%) rotate(0deg);}to{transform:translate(0,20%) rotate(360deg);}}`
+  },
+  {
+    id:'textdots', name:'Text Dots', category:'text',
+    description:'A plain "Loading" label with a ticking ellipsis.',
+    html:`<div class="l-textdots">Loading<span>.</span><span>.</span><span>.</span></div>`,
+    css:`.l-textdots{font-family:var(--font-mono);font-size:1.1rem;letter-spacing:.02em;color:var(--loader-color);}
+.l-textdots span{animation:textdot-fade calc(1.4s / var(--speed,1)) ease-in-out infinite;display:inline-block;}
+.l-textdots span:nth-child(2){animation-delay:calc(.2s / var(--speed,1));}
+.l-textdots span:nth-child(3){animation-delay:calc(.4s / var(--speed,1));}
+@keyframes textdot-fade{0%,80%,100%{opacity:.2;}40%{opacity:1;}}`
+  },
+  {
+    id:'neon', name:'Neon Pulse Ring', category:'glow',
+    description:'A ring that breathes with its own glow.',
+    html:`<div class="l-neon"></div>`,
+    css:`.l-neon{width:52px;height:52px;border-radius:50%;border:4px solid var(--loader-color);animation:neon-pulse calc(1.6s / var(--speed,1)) ease-in-out infinite;}
+@keyframes neon-pulse{0%,100%{box-shadow:0 0 4px var(--loader-color), 0 0 10px var(--loader-color);transform:scale(1);}50%{box-shadow:0 0 18px var(--loader-color), 0 0 34px var(--loader-color);transform:scale(1.06);}}`
+  },
+  {
+    id:'zigzag', name:'Zigzag Bounce', category:'path',
+    description:'A dot travelling a fixed zigzag, not a circle.',
+    html:`<div class="l-zigzag"><span></span></div>`,
+    css:`.l-zigzag{width:90px;height:50px;position:relative;}
+.l-zigzag span{position:absolute;width:12px;height:12px;border-radius:50%;background:var(--loader-color);animation:zigzag-move calc(1.6s / var(--speed,1)) ease-in-out infinite;}
+@keyframes zigzag-move{0%{left:0;top:38px;}20%{left:18px;top:0;}40%{left:36px;top:38px;}60%{left:54px;top:0;}80%{left:72px;top:38px;}100%{left:0;top:38px;}}`
+  },
+  {
+    id:'segring', name:'Segmented Ring', category:'ring',
+    description:'Twelve ticks fading in sequence around a circle.',
+    html:(() => {
+      let ticks = '';
+      for(let i=0;i<12;i++){
+        ticks += `<span style="transform:rotate(${i*30}deg);animation-delay:${(-1.1+i*0.1).toFixed(2)}s"></span>`;
+      }
+      return `<div class="l-segring">${ticks}</div>`;
+    })(),
+    css:`.l-segring{position:relative;width:52px;height:52px;}
+.l-segring span{position:absolute;top:0;left:50%;width:3px;height:13px;margin-left:-1.5px;border-radius:2px;background:var(--loader-color);transform-origin:50% 26px;animation:segring-fade calc(1.2s / var(--speed,1)) linear infinite;}
+@keyframes segring-fade{0%{opacity:1;}100%{opacity:.15;}}`
+  },
+  {
+    id:'star', name:'Star Burst', category:'glow',
+    description:'Eight rays pulsing outward like a camera flash.',
+    html:(() => {
+      let rays = '';
+      for(let i=0;i<8;i++){
+        rays += `<span style="--r:${i*45}deg;animation-delay:${(-0.07*i).toFixed(2)}s"></span>`;
+      }
+      return `<div class="l-star">${rays}</div>`;
+    })(),
+    css:`.l-star{position:relative;width:58px;height:58px;}
+.l-star span{position:absolute;top:50%;left:50%;width:3px;height:22px;margin:-11px 0 0 -1.5px;background:var(--loader-color);border-radius:2px;transform-origin:50% 0;animation:star-pulse calc(1.2s / var(--speed,1)) ease-in-out infinite;}
+@keyframes star-pulse{0%,100%{transform:rotate(var(--r)) scaleY(.5);opacity:.4;}50%{transform:rotate(var(--r)) scaleY(1);opacity:1;}}`
+  }
+];
+
+/* ============ APP STATE ============ */
+const state = {
+  filter: 'all',
+  search: '',
+  favorites: JSON.parse(localStorage.getItem('loaderlab-favorites') || '[]'),
+  cardColors: JSON.parse(localStorage.getItem('loaderlab-card-colors') || '{}')
+};
+
+const els = {
+  styleTag: document.getElementById('loaderStyles'),
+  grid: document.getElementById('grid'),
+  chipRow: document.getElementById('chipRow'),
+  galleryCount: document.getElementById('galleryCount'),
+  noResults: document.getElementById('noResults'),
+  loaderTotal: document.getElementById('loaderTotal'),
+  heroPreview: document.getElementById('heroPreview'),
+  heroTag: document.getElementById('heroTag'),
+  globalColor: document.getElementById('globalColor'),
+  speedSlider: document.getElementById('speedSlider'),
+  speedVal: document.getElementById('speedVal'),
+  searchInput: document.getElementById('searchInput'),
+  modalBackdrop: document.getElementById('modalBackdrop'),
+  modalTitle: document.getElementById('modalTitle'),
+  modalCode: document.getElementById('modalCode'),
+  copyBtn: document.getElementById('copyBtn'),
+  downloadBtn: document.getElementById('downloadBtn')
+};
+
+let activeModalLoader = null;
+
+/* Inject every loader's CSS once */
+function buildStylesheet(){
+  els.styleTag.textContent = LOADERS.map(l => l.css).join('\n\n');
+}
+
+/* Category chips */
+function buildChips(){
+  const cats = ['all', ...new Set(LOADERS.map(l => l.category))];
+  els.chipRow.innerHTML = cats.map(c =>
+    `<button class="chip" data-cat="${c}" aria-pressed="${c==='all'}">${c}</button>`
+  ).join('');
+  els.chipRow.addEventListener('click', e => {
+    const btn = e.target.closest('.chip');
+    if(!btn) return;
+    state.filter = btn.dataset.cat;
+    [...els.chipRow.children].forEach(c => c.setAttribute('aria-pressed', c===btn));
+    renderGrid();
+  });
+}
+
+function fullSource(loader){
+  return `<!-- ${loader.name} -->\n${loader.html}\n\n<style>\n:root{ --loader-color: #1B4B43; }\n\n${loader.css}\n</style>`;
+}
+
+function renderGrid(){
+  const q = state.search.trim().toLowerCase();
+  const list = LOADERS.filter(l => {
+    const matchesCat = state.filter === 'all' || l.category === state.filter;
+    const matchesQ = !q || l.name.toLowerCase().includes(q) || l.category.includes(q);
+    return matchesCat && matchesQ;
+  });
+
+  els.galleryCount.textContent = `${list.length} of ${LOADERS.length}`;
+  els.noResults.style.display = list.length ? 'none' : 'block';
+
+  els.grid.innerHTML = list.map(l => {
+    const isFav = state.favorites.includes(l.id);
+    const cardColor = state.cardColors[l.id] || '';
+    return `
+    <article class="card" data-id="${l.id}">
+      <div class="card-head">
+        <div>
+          <div class="card-name">${l.name}</div>
+          <div class="card-cat">${l.category}</div>
+        </div>
+        <button class="fav-btn" data-fav="${l.id}" aria-pressed="${isFav}" aria-label="Favorite ${l.name}">${isFav ? '♥' : '♡'}</button>
+      </div>
+      <div class="window" data-preview="${l.id}" style="${cardColor ? `--loader-color:${cardColor}` : ''}"></div>
+      <p class="card-desc">${l.description}</p>
+      <div class="card-foot">
+        <input type="color" class="card-color" data-cardcolor="${l.id}" value="${cardColor || '#1b4b43'}" title="Colour for this loader only">
+        <div class="card-actions">
+          <button class="icon-btn" data-view="${l.id}">View code</button>
+        </div>
+      </div>
+    </article>`;
+  }).join('');
+
+  list.forEach(l => {
+    const target = els.grid.querySelector(`[data-preview="${l.id}"]`);
+    if(target) target.innerHTML = l.html;
+  });
+
+  els.grid.querySelectorAll('[data-fav]').forEach(btn => {
+    btn.addEventListener('click', () => toggleFavorite(btn.dataset.fav));
+  });
+  els.grid.querySelectorAll('[data-view]').forEach(btn => {
+    btn.addEventListener('click', () => openModal(btn.dataset.view));
+  });
+  els.grid.querySelectorAll('[data-cardcolor]').forEach(input => {
+    input.addEventListener('input', () => setCardColor(input.dataset.cardcolor, input.value));
+  });
+}
+
+function toggleFavorite(id){
+  const i = state.favorites.indexOf(id);
+  if(i === -1) state.favorites.push(id); else state.favorites.splice(i,1);
+  localStorage.setItem('loaderlab-favorites', JSON.stringify(state.favorites));
+  renderGrid();
+}
+
+function setCardColor(id, color){
+  state.cardColors[id] = color;
+  localStorage.setItem('loaderlab-card-colors', JSON.stringify(state.cardColors));
+  const win = els.grid.querySelector(`[data-preview="${id}"]`);
+  if(win) win.style.setProperty('--loader-color', color);
+}
+
+function openModal(id){
+  const loader = LOADERS.find(l => l.id === id);
+  if(!loader) return;
+  activeModalLoader = loader;
+  els.modalTitle.textContent = loader.name;
+  els.modalCode.textContent = fullSource(loader);
+  els.modalBackdrop.classList.add('open');
+}
+function closeModal(){
+  els.modalBackdrop.classList.remove('open');
+  activeModalLoader = null;
+}
+
+/* ============ CONTROLS ============ */
+document.getElementById('themeRow').addEventListener('click', e => {
+  const btn = e.target.closest('.swatch');
+  if(!btn) return;
+  document.documentElement.setAttribute('data-theme', btn.dataset.theme);
+  [...btn.parentElement.children].forEach(s => s.setAttribute('data-active', s===btn));
+  localStorage.setItem('loaderlab-theme', btn.dataset.theme);
+});
+
+els.globalColor.addEventListener('input', () => {
+  document.documentElement.style.setProperty('--loader-color', els.globalColor.value);
+  localStorage.setItem('loaderlab-global-color', els.globalColor.value);
+});
+
+document.getElementById('resetColorsBtn').addEventListener('click', () => {
+  state.cardColors = {};
+  localStorage.removeItem('loaderlab-card-colors');
+  document.documentElement.style.removeProperty('--loader-color');
+  els.globalColor.value = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() || '#1B4B43';
+  renderGrid();
+});
+
+document.getElementById('randomColorsBtn').addEventListener('click', () => {
+  LOADERS.forEach(l => {
+    const hue = Math.floor(Math.random()*360);
+    state.cardColors[l.id] = `hsl(${hue} 60% 42%)`;
+  });
+  localStorage.setItem('loaderlab-card-colors', JSON.stringify(state.cardColors));
+  renderGrid();
+});
+
+els.speedSlider.addEventListener('input', () => {
+  document.documentElement.style.setProperty('--speed', els.speedSlider.value);
+  els.speedVal.textContent = `${els.speedSlider.value}×`;
+});
+
+els.searchInput.addEventListener('input', () => {
+  state.search = els.searchInput.value;
+  renderGrid();
+});
+
+document.getElementById('modalCloseBtn').addEventListener('click', closeModal);
+els.modalBackdrop.addEventListener('click', e => { if(e.target === els.modalBackdrop) closeModal(); });
+document.addEventListener('keydown', e => { if(e.key === 'Escape') closeModal(); });
+
+els.copyBtn.addEventListener('click', () => {
+  if(!activeModalLoader) return;
+  navigator.clipboard.writeText(fullSource(activeModalLoader)).then(() => {
+    const original = els.copyBtn.textContent;
+    els.copyBtn.textContent = 'Copied';
+    setTimeout(() => els.copyBtn.textContent = original, 1600);
+  });
+});
+
+els.downloadBtn.addEventListener('click', () => {
+  if(!activeModalLoader) return;
+  const blob = new Blob([fullSource(activeModalLoader)], {type:'text/html'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `${activeModalLoader.id}-loader.html`;
+  a.click();
+  URL.revokeObjectURL(url);
+});
+
+/* ============ INIT ============ */
+function init(){
+  buildStylesheet();
+  buildChips();
+  renderGrid();
+
+  els.loaderTotal.textContent = `${LOADERS.length} loaders across ${new Set(LOADERS.map(l=>l.category)).size} categories`;
+
+  const savedTheme = localStorage.getItem('loaderlab-theme');
+  if(savedTheme){
+    document.documentElement.setAttribute('data-theme', savedTheme);
+    document.querySelectorAll('.swatch').forEach(s => s.setAttribute('data-active', s.dataset.theme === savedTheme));
+  }
+  const savedColor = localStorage.getItem('loaderlab-global-color');
+  if(savedColor){
+    document.documentElement.style.setProperty('--loader-color', savedColor);
+    els.globalColor.value = savedColor;
+  }
+
+  const hero = LOADERS[Math.floor(Math.random()*LOADERS.length)];
+  els.heroPreview.innerHTML = hero.html;
+  els.heroTag.textContent = hero.name.toLowerCase();
+}
+
+init();
+</script>
+</body>
+</html>
