@@ -331,8 +331,15 @@ input[type="range"]{accent-color:var(--loader-color);width:120px;}
 .btn:hover{opacity:.85;}
 
 /* ============ FOOTER ============ */
-footer{border-top:2px solid var(--panel-border);padding:36px 0 50px;margin-top:50px;}
-footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:14px;color:var(--muted);font-size:.78rem;}
+footer{border-top:2px solid var(--panel-border);padding:44px 0 50px;margin-top:50px;}
+footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:32px;}
+.footer-brand .card-name{font-size:1.1rem;}
+.footer-brand p{color:var(--muted);font-size:.8rem;margin-top:8px;max-width:34ch;}
+.footer-meta{color:var(--muted);font-size:.78rem;margin-top:14px;}
+.footer-contact h4{font-size:.7rem;letter-spacing:.06em;color:var(--muted);margin-bottom:10px;text-transform:uppercase;}
+.footer-links{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:8px;font-size:.85rem;}
+.footer-links a{text-decoration:none;border-bottom:1px solid transparent;}
+.footer-links a:hover{border-color:var(--ink);}
 
 /* ============ LOADER ANIMATIONS (populated by JS) ============ */
 @media (prefers-reduced-motion: reduce){
@@ -435,8 +442,19 @@ footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:14px;
 
 <footer>
   <div class="wrap">
-    <span>LoaderLab — no dependencies, no build step, just CSS.</span>
-    <span id="loaderTotal"></span>
+    <div class="footer-brand">
+      <div class="card-name">LoaderLab</div>
+      <p>A working catalog of pure-CSS loading animations — no dependencies, no build step, just CSS.</p>
+      <div class="footer-meta" id="loaderTotal"></div>
+    </div>
+    <div class="footer-contact">
+      <h4>Built by KP Sreedhar</h4>
+      <ul class="footer-links">
+        <li><a href="mailto:sreedharkp.personal@gmail.com">sreedharkp.personal@gmail.com</a></li>
+        <li><a href="https://github.com/KPSreedhar" target="_blank" rel="noopener">github.com/KPSreedhar</a></li>
+        <li><a href="https://www.linkedin.com/in/sreedhar-kp/" target="_blank" rel="noopener">linkedin.com/in/sreedhar-kp</a></li>
+      </ul>
+    </div>
   </div>
 </footer>
 
@@ -662,6 +680,136 @@ const LOADERS = [
     css:`.l-star{position:relative;width:58px;height:58px;}
 .l-star span{position:absolute;top:50%;left:50%;width:3px;height:22px;margin:-11px 0 0 -1.5px;background:var(--loader-color);border-radius:2px;transform-origin:50% 0;animation:star-pulse calc(1.2s / var(--speed,1)) ease-in-out infinite;}
 @keyframes star-pulse{0%,100%{transform:rotate(var(--r)) scaleY(.5);opacity:.4;}50%{transform:rotate(var(--r)) scaleY(1);opacity:1;}}`
+  },
+  {
+    id:'flapdisplay', name:'Flip Dots', category:'bar',
+    description:'Four tiles flipping like an old split-flap board.',
+    html:`<div class="l-flap"><span></span><span></span><span></span><span></span></div>`,
+    css:`.l-flap{display:flex;gap:6px;}
+.l-flap span{width:14px;height:24px;background:var(--loader-color);border-radius:2px;animation:flap-turn calc(1.2s / var(--speed,1)) ease-in-out infinite;}
+.l-flap span:nth-child(2){animation-delay:.15s;}
+.l-flap span:nth-child(3){animation-delay:.3s;}
+.l-flap span:nth-child(4){animation-delay:.45s;}
+@keyframes flap-turn{0%,100%{transform:rotateX(0deg);}50%{transform:rotateX(180deg);}}`
+  },
+  {
+    id:'bubbles', name:'Bubble Pop', category:'glow',
+    description:'Five bubbles rising and popping at the top.',
+    html:`<div class="l-bubble"><span></span><span></span><span></span><span></span><span></span></div>`,
+    css:`.l-bubble{position:relative;width:80px;height:60px;}
+.l-bubble span{position:absolute;bottom:0;width:9px;height:9px;border-radius:50%;background:var(--loader-color);animation:bubble-rise calc(1.8s / var(--speed,1)) ease-in infinite;}
+.l-bubble span:nth-child(1){left:2px;animation-delay:0s;}
+.l-bubble span:nth-child(2){left:20px;width:7px;height:7px;animation-delay:.3s;}
+.l-bubble span:nth-child(3){left:38px;animation-delay:.6s;}
+.l-bubble span:nth-child(4){left:56px;width:8px;height:8px;animation-delay:.9s;}
+.l-bubble span:nth-child(5){left:70px;width:6px;height:6px;animation-delay:1.2s;}
+@keyframes bubble-rise{0%{transform:translateY(0) scale(.4);opacity:.9;}70%{opacity:.7;}100%{transform:translateY(-50px) scale(1.3);opacity:0;}}`
+  },
+  {
+    id:'cassette', name:'Cassette Reels', category:'shape',
+    description:'Two tape reels turning in opposite directions.',
+    html:`<div class="l-cassette"><div class="reel r1"><span></span></div><div class="reel r2"><span></span></div></div>`,
+    css:`.l-cassette{display:flex;gap:20px;align-items:center;}
+.l-cassette .reel{width:34px;height:34px;border-radius:50%;border:3px solid var(--loader-color);position:relative;animation:reel-spin calc(1.6s / var(--speed,1)) linear infinite;}
+.l-cassette .reel span{position:absolute;top:50%;left:50%;width:16px;height:2px;background:var(--loader-color);margin:-1px 0 0 -8px;}
+.l-cassette .reel span::after{content:'';position:absolute;top:-7px;left:7px;width:2px;height:16px;background:var(--loader-color);}
+.l-cassette .r2{animation-direction:reverse;}
+@keyframes reel-spin{to{transform:rotate(360deg);}}`
+  },
+  {
+    id:'pendulum', name:'Pendulum Swing', category:'path',
+    description:'An arm and bob swinging on a fixed pivot.',
+    html:`<div class="l-pendulum"><div class="arm"><span class="bob"></span></div></div>`,
+    css:`.l-pendulum{width:70px;height:60px;position:relative;}
+.l-pendulum .arm{position:absolute;top:0;left:50%;width:2px;height:44px;background:var(--loader-color);transform-origin:top center;animation:pendulum-swing calc(1.4s / var(--speed,1)) ease-in-out infinite;}
+.l-pendulum .bob{position:absolute;bottom:-6px;left:50%;width:12px;height:12px;margin-left:-6px;border-radius:50%;background:var(--loader-color);}
+@keyframes pendulum-swing{0%,100%{transform:rotate(-32deg);}50%{transform:rotate(32deg);}}`
+  },
+  {
+    id:'ripplerings', name:'Ripple Rings', category:'ring',
+    description:'Concentric rings expanding outward and fading.',
+    html:`<div class="l-ripplerings"><span></span><span></span><span></span></div>`,
+    css:`.l-ripplerings{position:relative;width:60px;height:60px;}
+.l-ripplerings span{position:absolute;inset:0;border:2px solid var(--loader-color);border-radius:50%;animation:ripplerings-grow calc(1.8s / var(--speed,1)) ease-out infinite;}
+.l-ripplerings span:nth-child(2){animation-delay:.6s;}
+.l-ripplerings span:nth-child(3){animation-delay:1.2s;}
+@keyframes ripplerings-grow{0%{transform:scale(.3);opacity:1;}100%{transform:scale(1.4);opacity:0;}}`
+  },
+  {
+    id:'typewriter', name:'Typewriter Cursor', category:'text',
+    description:'A word typing itself out with a blinking cursor.',
+    html:`<div class="l-typewriter"><span class="text">typing</span><span class="cursor"></span></div>`,
+    css:`.l-typewriter{font-family:var(--font-mono);font-size:1.1rem;color:var(--loader-color);display:flex;align-items:center;}
+.l-typewriter .text{overflow:hidden;white-space:nowrap;width:0;display:inline-block;animation:typewriter-type calc(2.4s / var(--speed,1)) steps(7) infinite;}
+.l-typewriter .cursor{width:2px;height:1.1em;background:var(--loader-color);margin-left:2px;animation:cursor-blink calc(.8s / var(--speed,1)) steps(1) infinite;}
+@keyframes typewriter-type{0%,10%{width:0;}50%{width:7ch;}90%,100%{width:0;}}
+@keyframes cursor-blink{0%,50%{opacity:1;}51%,100%{opacity:0;}}`
+  },
+  {
+    id:'bracket', name:'Bracket Fill', category:'bar',
+    description:'A block scanning back and forth inside square brackets.',
+    html:`<div class="l-bracket">[<div class="track"><div class="fill"></div></div>]</div>`,
+    css:`.l-bracket{display:flex;align-items:center;gap:2px;font-family:var(--font-mono);color:var(--loader-color);font-size:1.15rem;}
+.l-bracket .track{position:relative;width:60px;height:12px;border:1px solid var(--loader-color);}
+.l-bracket .fill{position:absolute;top:1px;bottom:1px;left:0;width:16px;background:var(--loader-color);animation:bracket-scan calc(1.4s / var(--speed,1)) ease-in-out infinite;}
+@keyframes bracket-scan{0%{left:0;}50%{left:calc(100% - 16px);}100%{left:0;}}`
+  },
+  {
+    id:'compass', name:'Compass Needle', category:'path',
+    description:'A needle searching for north inside a fixed ring.',
+    html:`<div class="l-compass"><div class="needle"></div></div>`,
+    css:`.l-compass{width:56px;height:56px;border-radius:50%;border:2px solid var(--loader-color);position:relative;}
+.l-compass .needle{position:absolute;top:50%;left:50%;width:2px;height:22px;background:var(--loader-color);margin:-22px 0 0 -1px;transform-origin:bottom center;animation:compass-spin calc(2.6s / var(--speed,1)) ease-in-out infinite;}
+@keyframes compass-spin{0%{transform:rotate(0deg);}25%{transform:rotate(110deg);}50%{transform:rotate(40deg);}75%{transform:rotate(250deg);}100%{transform:rotate(360deg);}}`
+  },
+  {
+    id:'coins', name:'Stacked Coins', category:'shape',
+    description:'Three discs stacking and settling in sequence.',
+    html:`<div class="l-coins"><span></span><span></span><span></span></div>`,
+    css:`.l-coins{display:flex;flex-direction:column-reverse;align-items:center;gap:3px;}
+.l-coins span{width:40px;height:8px;border-radius:50%;background:var(--loader-color);animation:coin-stack calc(1.6s / var(--speed,1)) ease-in-out infinite;}
+.l-coins span:nth-child(2){animation-delay:.2s;}
+.l-coins span:nth-child(3){animation-delay:.4s;}
+@keyframes coin-stack{0%,100%{opacity:.35;transform:scale(.8);}50%{opacity:1;transform:scale(1);}}`
+  },
+  {
+    id:'underline', name:'Underline Wave', category:'text',
+    description:'A short underline travelling beneath a word.',
+    html:`<div class="l-underline">loading<span></span></div>`,
+    css:`.l-underline{position:relative;font-family:var(--font-mono);font-size:1.1rem;color:var(--loader-color);padding-bottom:6px;}
+.l-underline span{position:absolute;left:0;bottom:0;height:2px;width:20%;background:var(--loader-color);animation:underline-slide calc(1.4s / var(--speed,1)) ease-in-out infinite;}
+@keyframes underline-slide{0%{left:0;width:20%;}50%{left:60%;width:40%;}100%{left:0;width:20%;}}`
+  },
+  {
+    id:'blinkgrid', name:'Blink Grid', category:'glow',
+    description:'A three-by-three grid flickering in a fixed sequence.',
+    html:(() => {
+      const order = [0,3,1,6,4,2,7,5,8];
+      let cells = '';
+      for(let i=0;i<9;i++){
+        const delay = (order[i]*0.1).toFixed(2);
+        cells += `<span style="animation-delay:${delay}s"></span>`;
+      }
+      return `<div class="l-blinkgrid">${cells}</div>`;
+    })(),
+    css:`.l-blinkgrid{display:grid;grid-template-columns:repeat(3,14px);gap:6px;}
+.l-blinkgrid span{width:14px;height:14px;border-radius:3px;background:var(--loader-color);animation:blinkgrid-fade calc(1.6s / var(--speed,1)) ease-in-out infinite;}
+@keyframes blinkgrid-fade{0%,100%{opacity:.2;}50%{opacity:1;}}`
+  },
+  {
+    id:'barcode', name:'Barcode Scan', category:'bar',
+    description:'A scan line sweeping across a row of fixed bars.',
+    html:(() => {
+      let bars = '';
+      const heights = [60,90,40,100,55,75,45,95,65,85,50,70];
+      heights.forEach(h => { bars += `<span style="height:${h}%"></span>`; });
+      return `<div class="l-barcode"><div class="bars">${bars}</div><div class="scanline"></div></div>`;
+    })(),
+    css:`.l-barcode{position:relative;width:90px;height:46px;overflow:hidden;}
+.l-barcode .bars{display:flex;gap:2px;height:100%;align-items:flex-end;}
+.l-barcode .bars span{width:3px;background:var(--loader-color);opacity:.45;}
+.l-barcode .scanline{position:absolute;top:0;bottom:0;left:0;width:2px;background:var(--loader-color);box-shadow:0 0 8px var(--loader-color);animation:barcode-scan calc(1.6s / var(--speed,1)) ease-in-out infinite;}
+@keyframes barcode-scan{0%{left:0;}50%{left:calc(100% - 2px);}100%{left:0;}}`
   }
 ];
 
