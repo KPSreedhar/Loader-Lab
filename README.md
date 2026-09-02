@@ -1,4 +1,5 @@
 # LoaderLab
+ https://kpsreedhar.github.io/Loader-Lab/
  
 A single-file catalog of 30 pure-CSS loading animations — no dependencies, no build step, no JS frameworks. Open `loaderlab.html` in a browser and it works.
  
